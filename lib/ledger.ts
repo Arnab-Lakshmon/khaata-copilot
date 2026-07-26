@@ -12,14 +12,21 @@ export type ParsedLedger = {
 export function fallbackParse(rawText: string): ParsedLedger {
   const text = rawText.trim();
   const lower = text.toLowerCase();
+  const normalized = lower.replace(/[₹?]/g, " rs ").replace(/rs\.?/g, " rs ");
   const type: LedgerType = /\b(bought|buy|purchase|purchased|from supplier)\b/.test(lower)
     ? "purchase"
     : /\b(paid|payment|received|gave)\b/.test(lower) && !/\b(sold|sale)\b/.test(lower)
       ? "payment"
       : "sale";
-  const amountMatch = lower.match(/(?:₹|rs\.?|rupees?|inr|\?)\s*([\d,]+(?:\.\d+)?)|\b([\d,]+(?:\.\d+)?)\s*(?:₹|rs\.?|rupees?|inr|\?)\b|\b([\d,]+(?:\.\d+)?)\s+(?=(?:paid|for)\b)/);
+  const amountMatch = normalized.match(/\brs\s*([\d,]+(?:\.\d+)?)|\b([\d,]+(?:\.\d+)?)\s*\brs\b|\b([\d,]+(?:\.\d+)?)\s+(?=(?:paid|for)\b)/);
   const amountDigits = amountMatch?.[0].match(/[\d,]+(?:\.\d+)?/);
-  const amount = amountDigits ? Number(amountDigits[0].replace(/,/g, "")) : null;
+  let amount = amountDigits ? Number(amountDigits[0].replace(/,/g, "")) : null;
+  if (!amount || amount <= 0) {
+    const candidates = Array.from(normalized.matchAll(/\b\d[\d,]*(?:\.\d+)?\b/g))
+      .filter((match) => !new RegExp(`${match[0]}\\s*kg\\b`, "i").test(normalized))
+      .map((match) => Number(match[0].replace(/,/g, "")));
+    amount = candidates.length ? candidates[candidates.length - 1] : null;
+  }
   const paidMatch = lower.match(/\b(paid|pay|payment received|settled|unpaid|not paid|due)\b/);
   const paid = paidMatch ? !/(unpaid|not paid|due)/.test(paidMatch[1]) : false;
   const partyMatch = text.match(/\b(?:to|from)\s+([A-Za-z][A-Za-z .'-]*?)(?=,|\s+(?:₹|rs\.?|rupees?|inr)|\s+(?:paid|unpaid|for)\b|\s+\d|$)/i) || text.match(/^([A-Za-z][A-Za-z .'-]*?)\s+paid\b/i);
