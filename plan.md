@@ -6,7 +6,11 @@
 
 ## Ledger Capture
 
-- [ ] Plan ledger capture UX and data handling.
+- [x] Plan ledger capture UX and data handling.
+- [ ] Add server-side structured text parsing route.
+- [ ] Add editable confirm-before-commit ledger capture UI.
+- [ ] Persist ledger entries and sale invoices in Supabase.
+- [ ] Exercise the five required inputs and run a production build.
 
 ## Invoice Generator
 
