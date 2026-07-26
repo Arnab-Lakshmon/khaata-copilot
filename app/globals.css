@@ -1,0 +1,44 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=tanker@400&f[]=array@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-satoshi: 'Satoshi', sans-serif;
+  --font-tanker: 'Tanker', sans-serif;
+  --font-array: 'Array', monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-satoshi);
+}
+
+.font-satoshi {
+  font-family: var(--font-satoshi);
+}
+
+.font-tanker {
+  font-family: var(--font-tanker);
+}
+
+.font-array {
+  font-family: var(--font-array);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
