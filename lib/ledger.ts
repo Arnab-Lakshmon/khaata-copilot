@@ -15,7 +15,7 @@ export function fallbackParse(rawText: string): ParsedLedger {
   const normalized = lower.replace(/[₹?]/g, " rs ").replace(/rs\.?/g, " rs ");
   const type: LedgerType = /\b(bought|buy|purchase|purchased|from supplier)\b/.test(lower)
     ? "purchase"
-    : /\b(paid|payment|received|gave)\b/.test(lower) && !/\b(sold|sale)\b/.test(lower)
+    : /\b(paid|payment|received|gave)\b/.test(lower) && !/\b(sold|sale|becha|bechi|beche)\b/.test(lower)
       ? "payment"
       : "sale";
   const amountMatch = normalized.match(/\brs\s*([\d,]+(?:\.\d+)?)|\b([\d,]+(?:\.\d+)?)\s*\brs\b|\b([\d,]+(?:\.\d+)?)\s+(?=(?:paid|for)\b)/);
@@ -27,9 +27,9 @@ export function fallbackParse(rawText: string): ParsedLedger {
       .map((match) => Number(match[0].replace(/,/g, "")));
     amount = candidates.length ? candidates[candidates.length - 1] : null;
   }
-  const paidMatch = lower.match(/\b(paid|pay|payment received|settled|unpaid|not paid|due)\b/);
+  const paidMatch = lower.match(/\b(paid|pay|payment received|settled|payment hogaya|payment ho gaya|hogaya|ho gaya|unpaid|not paid|due)\b/);
   const paid = paidMatch ? !/(unpaid|not paid|due)/.test(paidMatch[1]) : false;
-  const partyMatch = text.match(/\b(?:to|from)\s+([A-Za-z][A-Za-z .'-]*?)(?=,|\s+(?:₹|rs\.?|rupees?|inr)|\s+(?:paid|unpaid|for)\b|\s+\d|$)/i) || text.match(/^([A-Za-z][A-Za-z .'-]*?)\s+paid\b/i);
+  const partyMatch = text.match(/\b(?:to|from)\s+([A-Za-z][A-Za-z .'-]*?)(?=,|\s+(?:₹|rs\.?|rupees?|inr)|\s+(?:paid|unpaid|for)\b|\s+\d|$)/i) || text.match(/^([A-Za-z][A-Za-z .'-]*?)\s+(?:ko\s+)?(?:paid|payment|becha|bechi|beche)\b/i) || text.match(/^([A-Za-z][A-Za-z .'-]*?)\s+ko\b/i);
   const paymentParty = type === "payment" && partyMatch?.[1] ? partyMatch[1].trim() : null;
   const party_name = paymentParty || partyMatch?.[1].trim() || (type === "payment" ? "Customer" : "Unknown party");
   const item_description = text.replace(partyMatch?.[0] || "", "").replace(/,?\s*(?:₹|rs\.?|rupees?|inr|\?)\s*[\d,]+(?:\.\d+)?/gi, "").replace(/\b[\d,]+(?:\.\d+)?\s+(?:paid|rupees?)\b/gi, "").trim();
