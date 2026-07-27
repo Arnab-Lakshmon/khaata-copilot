@@ -14,7 +14,9 @@ export async function POST(request: Request) {
   const value = cleanParsed(parsed, raw_text);
   const entry = await fetch(`${base}/rest/v1/ledger_entries`, { method: "POST", headers, body: JSON.stringify({ shop_id: shopId, raw_text, parsed_json: value, type: value.type, amount: value.amount, party_name: value.party_name, paid_bool: value.paid }) }).then(async (r) => r.ok ? r.json() : Promise.reject(new Error(await r.text())));
   if (value.type !== "sale") return NextResponse.json({ entry_id: entry[0].id });
-  const invoiceNumber = `INV-${String(Date.now()).slice(-3)}`;
+  const shopShort = String(shopId).replace(/[^a-zA-Z0-9]/g, "").slice(0, 8).toUpperCase() || "DEMO";
+  const entryKey = String(entry[0].id).replace(/[^a-zA-Z0-9]/g, "").slice(0, 8).toUpperCase();
+  const invoiceNumber = `KC-${shopShort}-${entryKey}`;
   const due = new Date(Date.now() + 7 * 86400000).toISOString();
   const invoice = await fetch(`${base}/rest/v1/invoices`, { method: "POST", headers, body: JSON.stringify({ ledger_entry_id: entry[0].id, invoice_number: invoiceNumber, amount: value.amount, due_date: due, status: value.paid ? "paid" : "unpaid" }) }).then(async (r) => r.ok ? r.json() : Promise.reject(new Error(await r.text())));
   return NextResponse.json({ entry_id: entry[0].id, invoice_id: invoice[0].id, invoice_number: invoiceNumber });
