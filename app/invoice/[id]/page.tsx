@@ -71,12 +71,19 @@ function getPublicBaseUrl() {
   return configured || (vercel ? `https://${vercel}` : "https://khaata-copilot.vercel.app");
 }
 
+function getInvoiceDescription(value: string | undefined) {
+  const description = value?.trim();
+  if (!description) return "Sale";
+  const legacyMarkers = /\b(?:sold|sell|sale|becha|bechi|beche|paid|payment|hogaya|ho gaya|rs\.?|rupees?|inr)\b|₹/i;
+  return legacyMarkers.test(description) ? "Sale" : description;
+}
+
 export default async function InvoicePage({ params }: { params: { id: string } }) {
   const data = await getInvoice(params.id);
   if (!data) notFound();
   const { invoice, entry, shop } = data;
   const shopName = shop.name || "Khaata Copilot Shop";
-  const itemDescription = entry.parsed_json?.item_description || "General sale";
+  const itemDescription = getInvoiceDescription(entry.parsed_json?.item_description);
   const status = invoice.status || (entry.paid_bool ? "paid" : "unpaid");
   const publicUrl = `${getPublicBaseUrl()}/invoice/${encodeURIComponent(invoice.id)}`;
   const whatsappMessage = `${shopName} invoice ${invoice.invoice_number} for ${formatAmount(invoice.amount ?? entry.amount)}. Due ${formatDate(invoice.due_date)}. View invoice: ${publicUrl}`;
