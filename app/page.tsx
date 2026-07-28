@@ -25,12 +25,15 @@ export default function Home() {
               A calm, clear command centre for Indian shop owners to keep track
               of sales, payments, and what needs attention next.
             </p>
+            <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/ledger"
               className="font-satoshi mt-10 inline-flex items-center rounded-full bg-[#d85b3f] px-7 py-4 text-sm font-bold text-white shadow-[5px_5px_0_#17211d] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[3px_3px_0_#17211d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]"
             >
               Enter as Demo Shop
             </Link>
+            <Link href="/reconciliation" className="font-satoshi inline-flex items-center rounded-full border border-[#17211d]/25 px-7 py-4 text-sm font-bold transition-colors hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]">Match UPI payments</Link>
+            </div>
           </div>
         </section>
 
