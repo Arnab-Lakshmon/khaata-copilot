@@ -13,6 +13,17 @@ export type OpenInvoice = {
   party_name: string;
 };
 
+export type FuzzyDecision = {
+  invoice: OpenInvoice;
+  confidence: number;
+  nameSimilarity: number;
+  amountSimilarity: number;
+  dateSimilarity: number;
+  possiblePartial: boolean;
+  possibleSplit: boolean;
+  dateDifferenceDays: number;
+};
+
 export type DeterministicDecision =
   | { matched: true; invoice: OpenInvoice; referenceMatchedBy: "party name" | "invoice number" }
   | { matched: false; reason: "no amount and date candidate" | "reference did not uniquely identify an invoice" };
@@ -52,6 +63,74 @@ export function parseTransactionLine(rawLine: string): ImportedTransaction {
 
 export function normalizeReference(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
+export function payerNameFromReference(value: string) {
+  return value
+    .replace(amountPattern, " ")
+    .replace(isoDatePattern, " ")
+    .replace(indianDatePattern, " ")
+    .replace(/\b(?:upi|imps|neft|ref|txn|transaction|payment|paid|from|to|bank|transfer)\b/gi, " ")
+    .replace(/[|/\\-]+/g, " ")
+    .replace(/\b\d{6,}\b/g, " ")
+    .replace(/\s+/g, " ")
+    .replace(/^[\s—–-]+|[\s—–-]+$/g, "")
+    .trim();
+}
+
+function levenshtein(left: string, right: string) {
+  const previous = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let row = 1; row <= left.length; row += 1) {
+    let diagonal = previous[0];
+    previous[0] = row;
+    for (let column = 1; column <= right.length; column += 1) {
+      const saved = previous[column];
+      previous[column] = Math.min(previous[column] + 1, previous[column - 1] + 1, diagonal + (left[row - 1] === right[column - 1] ? 0 : 1));
+      diagonal = saved;
+    }
+  }
+  return previous[right.length];
+}
+
+function phoneticSkeleton(value: string) {
+  return normalizeReference(value).replace(/[aeiou]/g, "").replace(/ph/g, "f").replace(/v/g, "w").replace(/sh/g, "s");
+}
+
+export function nameSimilarity(payerName: string, partyName: string) {
+  const payer = normalizeReference(payerName);
+  const party = normalizeReference(partyName);
+  if (!payer || !party) return 0;
+  const payerTokens = payer.split(" ");
+  const partyTokens = party.split(" ");
+  const overlap = payerTokens.filter((token) => token.length > 1 && partyTokens.some((other) => other === token || other.startsWith(token) || token.startsWith(other))).length / Math.max(payerTokens.length, partyTokens.length);
+  const edit = 1 - levenshtein(payer, party) / Math.max(payer.length, party.length);
+  const skeletonLeft = phoneticSkeleton(payer);
+  const skeletonRight = phoneticSkeleton(party);
+  const phonetic = skeletonLeft && skeletonRight ? 1 - levenshtein(skeletonLeft, skeletonRight) / Math.max(skeletonLeft.length, skeletonRight.length) : 0;
+  return Math.round(Math.max(overlap, edit, phonetic) * 100);
+}
+
+export function dateDifferenceDays(transactionDate: string, dueDate: string) {
+  const transactionMs = Date.parse(`${transactionDate}T00:00:00Z`);
+  const dueMs = Date.parse(dueDate);
+  return Number.isFinite(transactionMs) && Number.isFinite(dueMs) ? Math.round(Math.abs(transactionMs - dueMs) / 86_400_000) : 99;
+}
+
+export function decideFuzzyMatch(transaction: ImportedTransaction, payerName: string, invoices: OpenInvoice[], splitInvoiceIds = new Set<string>()): FuzzyDecision | null {
+  if (transaction.amount === null) return null;
+  const transactionAmount = transaction.amount;
+  const candidates = invoices.map((invoice) => {
+    const invoiceAmount = Number(invoice.amount);
+    const possiblePartial = transactionAmount < invoiceAmount;
+    const possibleSplit = splitInvoiceIds.has(invoice.id);
+    const amountSimilarity = transactionAmount === invoiceAmount || possibleSplit ? 100 : possiblePartial ? Math.max(35, Math.round((transactionAmount / invoiceAmount) * 100)) : Math.max(0, Math.round(100 - ((transactionAmount - invoiceAmount) / invoiceAmount) * 100));
+    const difference = dateDifferenceDays(transaction.transactionDate, invoice.due_date);
+    const dateSimilarity = difference <= 2 ? 100 : difference <= 7 ? Math.max(35, 100 - (difference - 2) * 13) : 0;
+    const similarity = nameSimilarity(payerName, invoice.party_name);
+    const confidence = Math.round(amountSimilarity * 0.5 + similarity * 0.35 + dateSimilarity * 0.15);
+    return { invoice, confidence, nameSimilarity: similarity, amountSimilarity, dateSimilarity, possiblePartial, possibleSplit, dateDifferenceDays: difference };
+  }).filter((candidate) => candidate.dateSimilarity > 0 && candidate.nameSimilarity >= 25);
+  return candidates.sort((left, right) => right.confidence - left.confidence)[0] || null;
 }
 
 export function datesWithinTwoDays(transactionDate: string, dueDate: string) {
