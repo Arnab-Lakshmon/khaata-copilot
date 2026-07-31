@@ -23,7 +23,7 @@ async function draftReminder(invoice: InvoiceRow & { party_name: string }, tone:
   if (!key) throw new Error("Gemini is not configured for reminder drafting.");
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(key)}`, {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: `Write one WhatsApp-ready payment reminder in plain text, 45 words maximum. Tone: ${tone}. The wording must clearly reflect that tone. Mention the customer name, amount owed, invoice number, and due date. Do not invent facts, add a subject, use markdown, or include a greeting sign-off longer than one line. Facts: ${JSON.stringify({ customer: invoice.party_name, amountOwed: Number(invoice.amount), invoiceNumber: invoice.invoice_number, dueDate: invoice.due_date })}` }] }] }),
+    body: JSON.stringify({ contents: [{ parts: [{ text: `Write one WhatsApp-ready payment reminder in plain text, 45 words maximum. Tone: ${tone}. The wording must clearly reflect that tone. Mention the customer name, amount owed using the ₹ symbol (never $, USD, or another currency), invoice number, and due date. Do not invent facts, add a subject, use markdown, or include a greeting sign-off longer than one line. Facts: ${JSON.stringify({ customer: invoice.party_name, amountOwed: `₹${Number(invoice.amount)}`, invoiceNumber: invoice.invoice_number, dueDate: invoice.due_date })}` }] }] }),
   });
   if (!response.ok) throw new Error(`Gemini reminder failed: ${await response.text()}`);
   const body = await response.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
