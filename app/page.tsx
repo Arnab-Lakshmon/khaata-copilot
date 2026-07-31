@@ -34,6 +34,7 @@ export default function Home() {
             </Link>
             <Link href="/reconciliation" className="font-satoshi inline-flex items-center rounded-full border border-[#17211d]/25 px-7 py-4 text-sm font-bold transition-colors hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]">Match UPI payments</Link>
             <Link href="/reminders" className="font-satoshi inline-flex items-center rounded-full border border-[#17211d]/25 px-7 py-4 text-sm font-bold transition-colors hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]">Chase overdue invoices</Link>
+            <Link href="/health" className="font-satoshi inline-flex items-center rounded-full border border-[#17211d]/25 px-7 py-4 text-sm font-bold transition-colors hover:bg-white/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]">View shop health</Link>
             </div>
           </div>
         </section>
