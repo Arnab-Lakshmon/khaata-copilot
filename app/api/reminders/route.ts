@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 type InvoiceRow = { id: string; ledger_entry_id: string; invoice_number: string; amount: number | string; due_date: string; status: "unpaid" | "partial"; last_reminded_at: string | null };
-type LedgerRow = { id: string; party_name: string | null };
+type LedgerRow = { id: string; party_name: string | null; parsed_json: { item_description?: string } | null };
 
 function config() {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -18,12 +18,19 @@ async function rest<T>(base: string, headers: HeadersInit, path: string): Promis
   return response.json() as Promise<T>;
 }
 
-async function draftReminder(invoice: InvoiceRow & { party_name: string }, tone: "polite" | "firm") {
+function cleanDescription(value: string | undefined) {
+  const description = value?.trim();
+  if (!description) return "Sale";
+  const legacyMarkers = /\b(?:sold|sell|sale|becha|bechi|beche|paid|payment|hogaya|ho gaya|rs\.?|rupees?|inr)\b|â‚¹|\?/i;
+  return legacyMarkers.test(description) ? "Sale" : description.slice(0, 120);
+}
+
+async function draftReminder(invoice: InvoiceRow & { party_name: string; item_description: string }, tone: "polite" | "firm") {
   const key = process.env.GEMINI_API_KEY;
   if (!key) throw new Error("Gemini is not configured for reminder drafting.");
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${encodeURIComponent(key)}`, {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: `Write one WhatsApp-ready payment reminder in plain text, 45 words maximum. Tone: ${tone}. The wording must clearly reflect that tone. Mention the customer name, amount owed using the ₹ symbol (never $, USD, or another currency), invoice number, and due date. Do not invent facts, add a subject, use markdown, or include a greeting sign-off longer than one line. Facts: ${JSON.stringify({ customer: invoice.party_name, amountOwed: `₹${Number(invoice.amount)}`, invoiceNumber: invoice.invoice_number, dueDate: invoice.due_date })}` }] }] }),
+    body: JSON.stringify({ contents: [{ parts: [{ text: `Write one WhatsApp-ready payment reminder in plain text, 55 words maximum. Tone: ${tone}. The wording must clearly reflect that tone. Mention the customer name, amount owed using the ₹ symbol (never $, USD, or another currency), invoice number, due date, and what was purchased. Reference the item naturally; do not invent quantity or details. Do not add a subject, use markdown, or include a greeting sign-off longer than one line. Facts: ${JSON.stringify({ customer: invoice.party_name, item: invoice.item_description, amountOwed: `₹${Number(invoice.amount)}`, invoiceNumber: invoice.invoice_number, dueDate: invoice.due_date })}` }] }] }),
   });
   if (!response.ok) throw new Error(`Gemini reminder failed: ${await response.text()}`);
   const body = await response.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
@@ -47,9 +54,9 @@ export async function POST(request: Request) {
       const filter = invoiceId ? `&id=eq.${encodeURIComponent(invoiceId)}` : "";
       const invoices = await rest<InvoiceRow[]>(base, headers, `invoices?status=in.(unpaid,partial)&due_date=lt.${today}${filter}&select=id,ledger_entry_id,invoice_number,amount,due_date,status,last_reminded_at&order=due_date.asc`);
       const ids = invoices.map((invoice) => invoice.ledger_entry_id).filter(Boolean);
-      const entries = ids.length ? await rest<LedgerRow[]>(base, headers, `ledger_entries?id=in.(${ids.join(",")})&shop_id=eq.${shops[0].id}&select=id,party_name`) : [];
-      const names = new Map(entries.map((entry) => [entry.id, entry.party_name || "Customer"]));
-      const overdue = invoices.filter((invoice) => names.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: names.get(invoice.ledger_entry_id)! }));
+      const entries = ids.length ? await rest<LedgerRow[]>(base, headers, `ledger_entries?id=in.(${ids.join(",")})&shop_id=eq.${shops[0].id}&select=id,party_name,parsed_json`) : [];
+      const entryById = new Map(entries.map((entry) => [entry.id, entry]));
+      const overdue = invoices.filter((invoice) => entryById.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: entryById.get(invoice.ledger_entry_id)?.party_name || "Customer", item_description: cleanDescription(entryById.get(invoice.ledger_entry_id)?.parsed_json?.item_description) }));
       send({ type: "status", message: `${overdue.length} overdue invoice${overdue.length === 1 ? "" : "s"} found. Drafting ${tone} reminders…` });
       const drafts = [];
       for (let index = 0; index < overdue.length; index += 1) {
