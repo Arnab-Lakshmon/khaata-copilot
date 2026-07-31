@@ -33,8 +33,8 @@ async function draftReminder(invoice: InvoiceRow & { party_name: string }, tone:
 }
 
 export async function POST(request: Request) {
-  let tone: "polite" | "firm" = "polite";
-  try { const body = await request.json(); tone = body.tone === "firm" ? "firm" : "polite"; } catch { /* default tone */ }
+  let tone: "polite" | "firm" = "polite"; let invoiceId: string | null = null; let tones: Record<string, "polite" | "firm"> = {};
+  try { const body = await request.json(); tone = body.tone === "firm" ? "firm" : "polite"; invoiceId = typeof body.invoiceId === "string" ? body.invoiceId : null; tones = body.tones && typeof body.tones === "object" ? body.tones : {}; } catch { /* default tone */ }
   const encoder = new TextEncoder();
   const stream = new ReadableStream({ async start(controller) {
     const send = (data: unknown) => controller.enqueue(encoder.encode(`${JSON.stringify(data)}\n`));
@@ -44,7 +44,8 @@ export async function POST(request: Request) {
       send({ type: "status", message: "Finding overdue invoices in the demo shop…" });
       const shops = await rest<{ id: string }[]>(base, headers, "shops?demo_flag=eq.true&select=id&limit=1");
       if (!shops[0]) throw new Error("Demo shop not found.");
-      const invoices = await rest<InvoiceRow[]>(base, headers, `invoices?status=in.(unpaid,partial)&due_date=lt.${today}&select=id,ledger_entry_id,invoice_number,amount,due_date,status&order=due_date.asc`);
+      const filter = invoiceId ? `&id=eq.${encodeURIComponent(invoiceId)}` : "";
+      const invoices = await rest<InvoiceRow[]>(base, headers, `invoices?status=in.(unpaid,partial)&due_date=lt.${today}${filter}&select=id,ledger_entry_id,invoice_number,amount,due_date,status&order=due_date.asc`);
       const ids = invoices.map((invoice) => invoice.ledger_entry_id).filter(Boolean);
       const entries = ids.length ? await rest<LedgerRow[]>(base, headers, `ledger_entries?id=in.(${ids.join(",")})&shop_id=eq.${shops[0].id}&select=id,party_name`) : [];
       const names = new Map(entries.map((entry) => [entry.id, entry.party_name || "Customer"]));
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
       for (let index = 0; index < overdue.length; index += 1) {
         const invoice = overdue[index];
         send({ type: "status", message: `Drafting reminder ${index + 1} of ${overdue.length} for ${invoice.party_name}…` });
-        const message = await draftReminder(invoice, tone);
+        const message = await draftReminder(invoice, tones[invoice.id] === "firm" ? "firm" : tone);
         drafts.push({ ...invoice, message });
       }
       send({ type: "complete", drafts });
