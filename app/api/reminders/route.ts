@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-type InvoiceRow = { id: string; ledger_entry_id: string; invoice_number: string; amount: number | string; due_date: string; status: "unpaid" | "partial" };
+type InvoiceRow = { id: string; ledger_entry_id: string; invoice_number: string; amount: number | string; due_date: string; status: "unpaid" | "partial"; last_reminded_at: string | null };
 type LedgerRow = { id: string; party_name: string | null };
 
 function config() {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       const shops = await rest<{ id: string }[]>(base, headers, "shops?demo_flag=eq.true&select=id&limit=1");
       if (!shops[0]) throw new Error("Demo shop not found.");
       const filter = invoiceId ? `&id=eq.${encodeURIComponent(invoiceId)}` : "";
-      const invoices = await rest<InvoiceRow[]>(base, headers, `invoices?status=in.(unpaid,partial)&due_date=lt.${today}${filter}&select=id,ledger_entry_id,invoice_number,amount,due_date,status&order=due_date.asc`);
+      const invoices = await rest<InvoiceRow[]>(base, headers, `invoices?status=in.(unpaid,partial)&due_date=lt.${today}${filter}&select=id,ledger_entry_id,invoice_number,amount,due_date,status,last_reminded_at&order=due_date.asc`);
       const ids = invoices.map((invoice) => invoice.ledger_entry_id).filter(Boolean);
       const entries = ids.length ? await rest<LedgerRow[]>(base, headers, `ledger_entries?id=in.(${ids.join(",")})&shop_id=eq.${shops[0].id}&select=id,party_name`) : [];
       const names = new Map(entries.map((entry) => [entry.id, entry.party_name || "Customer"]));
@@ -66,3 +66,14 @@ export async function POST(request: Request) {
 }
 
 export async function GET() { return NextResponse.json({ error: "Use POST to draft overdue reminders." }, { status: 405 }); }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json() as { invoiceId?: string };
+    if (!body.invoiceId) return NextResponse.json({ error: "Invoice is required." }, { status: 400 });
+    const { base, headers } = config();
+    const updated = await fetch(`${base}/rest/v1/invoices?id=eq.${encodeURIComponent(body.invoiceId)}&status=in.(unpaid,partial)`, { method: "PATCH", headers: { ...headers, Prefer: "return=representation" }, body: JSON.stringify({ last_reminded_at: new Date().toISOString() }) });
+    if (!updated.ok) throw new Error(await updated.text());
+    return NextResponse.json({ ok: true });
+  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Could not record reminder." }, { status: 500 }); }
+}
