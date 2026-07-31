@@ -3,7 +3,7 @@
 import { useState } from "react";
 import WhatsAppShare from "../../components/WhatsAppShare";
 
-type Draft = { id: string; invoice_number: string; amount: number | string; due_date: string; status: string; party_name: string; message: string; last_reminded_at: string | null };
+type Draft = { id: string; invoice_number: string; amount: number | string; due_date: string; status: string; party_name: string; message: string; last_reminded_at: string };
 function money(value: number | string) { return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Number(value)); }
 function date(value: string) { return new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(value)); }
 function gstDeadline() { const now = new Date(); return new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long" }).format(new Date(now.getFullYear(), now.getMonth() + 1, 20)); }
