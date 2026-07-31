@@ -47,3 +47,19 @@ export async function GET() {
     return NextResponse.json({ score, collectionRate, reconciliationRate, bookkeepingRate, invoiceList, weights: { collection: 50, reconciliation: 30, bookkeeping: 20 }, generatedAt: new Date().toISOString() });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Could not load shop health." }, { status: 500 }); }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json() as { invoiceId?: string; dueDate?: string };
+    if (!body.invoiceId || !body.dueDate || !/^\d{4}-\d{2}-\d{2}$/.test(body.dueDate)) return NextResponse.json({ error: "Enter a valid due date." }, { status: 400 });
+    const { base, headers } = config();
+    const shops = await rest<{ id: string }[]>(base, headers, "shops?demo_flag=eq.true&select=id&limit=1");
+    if (!shops[0]) throw new Error("Demo shop not found.");
+    const invoice = await rest<{ id: string; ledger_entry_id: string }[]>(base, headers, `invoices?id=eq.${encodeURIComponent(body.invoiceId)}&select=id,ledger_entry_id&limit=1`);
+    if (!invoice[0]) return NextResponse.json({ error: "Invoice not found." }, { status: 404 });
+    const entry = await rest<{ id: string }[]>(base, headers, `ledger_entries?id=eq.${encodeURIComponent(invoice[0].ledger_entry_id)}&shop_id=eq.${shops[0].id}&select=id&limit=1`);
+    if (!entry[0]) return NextResponse.json({ error: "Invoice is not part of the demo shop." }, { status: 404 });
+    const updated = await rest<{ id: string; due_date: string }[]>(base, headers, `invoices?id=eq.${encodeURIComponent(body.invoiceId)}&select=id,due_date`, { method: "PATCH", body: JSON.stringify({ due_date: body.dueDate }) });
+    return NextResponse.json({ invoice: updated[0] });
+  } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Could not update due date." }, { status: 500 }); }
+}
