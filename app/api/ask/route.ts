@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 type Invoice = { id: string; ledger_entry_id: string; invoice_number: string; amount: number | string; due_date: string; status: "paid" | "partial" | "unpaid" };
-type Ledger = { id: string; party_name: string | null; created_at: string };
+type Ledger = { id: string; party_name: string | null; created_at: string; parsed_json: { item_description?: string } | null };
 type Transaction = { id: string; amount: number | string; matched_invoice_id: string | null; match_type: string | null; payer_name: string | null; transaction_date: string | null; created_at: string };
 
 function config() {
@@ -21,6 +21,12 @@ async function rest<T>(base: string, headers: HeadersInit, path: string): Promis
 
 function rate(value: number, total: number) { return total ? Math.max(0, Math.min(1, value / total)) : 1; }
 function clean(value: string | null) { return value?.trim() || "Unknown payer"; }
+function cleanDescription(value: string | undefined) {
+  const description = value?.trim();
+  if (!description) return "Sale";
+  const legacyMarkers = /\b(?:sold|sell|sale|becha|bechi|beche|paid|payment|hogaya|ho gaya|rs\.?|rupees?|inr)\b|Ã¢â€šÂ¹|\?/i;
+  return legacyMarkers.test(description) ? "Sale" : description.slice(0, 120);
+}
 
 async function answer(question: string, context: unknown) {
   const key = process.env.GEMINI_API_KEY;
@@ -51,11 +57,11 @@ export async function POST(request: Request) {
       const shopId = shops[0].id;
       const [invoices, ledger, transactions] = await Promise.all([
         rest<Invoice[]>(base, headers, "invoices?select=id,ledger_entry_id,invoice_number,amount,due_date,status&order=due_date.asc"),
-        rest<Ledger[]>(base, headers, `ledger_entries?shop_id=eq.${encodeURIComponent(shopId)}&select=id,party_name,created_at`),
+        rest<Ledger[]>(base, headers, `ledger_entries?shop_id=eq.${encodeURIComponent(shopId)}&select=id,party_name,created_at,parsed_json`),
         rest<Transaction[]>(base, headers, `transactions?shop_id=eq.${encodeURIComponent(shopId)}&select=id,amount,matched_invoice_id,match_type,payer_name,transaction_date,created_at&order=transaction_date.desc`),
       ]);
       const entryById = new Map(ledger.map((entry) => [entry.id, entry]));
-      const scopedInvoices = invoices.filter((invoice) => entryById.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: entryById.get(invoice.ledger_entry_id)?.party_name || "Unknown party" }));
+      const scopedInvoices = invoices.filter((invoice) => entryById.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: entryById.get(invoice.ledger_entry_id)?.party_name || "Unknown party", item_description: cleanDescription(entryById.get(invoice.ledger_entry_id)?.parsed_json?.item_description) }));
       const scopedTransactions = transactions.map((transaction) => ({ amount: Number(transaction.amount || 0), payer_name: clean(transaction.payer_name), transaction_date: transaction.transaction_date || transaction.created_at.slice(0, 10), matched_invoice_id: transaction.matched_invoice_id, match_status: transaction.matched_invoice_id ? "matched" : (transaction.match_type || "unmatched") }));
       const now = new Date(); const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString().slice(0, 10); const nextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)).toISOString().slice(0, 10);
       const collectedThisMonth = scopedTransactions.filter((transaction) => transaction.matched_invoice_id && transaction.transaction_date >= monthStart && transaction.transaction_date < nextMonth).reduce((sum, transaction) => sum + transaction.amount, 0);
@@ -63,7 +69,7 @@ export async function POST(request: Request) {
       const totalInvoiced = scopedInvoices.reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0);
       const collectionRate = rate(paidAmount, totalInvoiced); const reconciliationRate = rate(scopedTransactions.filter((transaction) => Boolean(transaction.matched_invoice_id)).length, scopedTransactions.length); const cutoff = Date.now() - 3 * 24 * 60 * 60 * 1000; const bookkeepingRate = rate(ledger.filter((entry) => new Date(entry.created_at).getTime() >= cutoff).length, ledger.length); const score = Math.round(collectionRate * 50 + reconciliationRate * 30 + bookkeepingRate * 20);
       const duplicateLookingPayments = scopedTransactions.filter((transaction, index, all) => all.some((other, otherIndex) => otherIndex > index && other.amount === transaction.amount && other.payer_name === transaction.payer_name && other.transaction_date === transaction.transaction_date)).map((transaction) => ({ payer_name: transaction.payer_name, amount: transaction.amount, transaction_date: transaction.transaction_date }));
-      const context = { invoices: scopedInvoices.map(({ id, invoice_number, party_name, amount, due_date, status }) => ({ id, invoice_number, party_name, amount: Number(amount), due_date, status })), transactions: scopedTransactions, health: { score, collection_rate: collectionRate, reconciliation_rate: reconciliationRate, bookkeeping_rate: bookkeepingRate, weights: { collection: 50, reconciliation: 30, bookkeeping: 20 } }, derived: { current_month: `${monthStart} to ${nextMonth} exclusive`, collected_this_month: collectedThisMonth, duplicate_looking_payments: duplicateLookingPayments, invoice_party_lookup: Object.fromEntries(scopedInvoices.map((invoice) => [invoice.id, invoice.party_name])) } };
+      const context = { invoices: scopedInvoices.map(({ id, invoice_number, party_name, item_description, amount, due_date, status }) => ({ id, invoice_number, party_name, item_description, amount: Number(amount), due_date, status })), transactions: scopedTransactions, health: { score, collection_rate: collectionRate, reconciliation_rate: reconciliationRate, bookkeeping_rate: bookkeepingRate, weights: { collection: 50, reconciliation: 30, bookkeeping: 20 } }, derived: { current_month: `${monthStart} to ${nextMonth} exclusive`, collected_this_month: collectedThisMonth, duplicate_looking_payments: duplicateLookingPayments, invoice_party_lookup: Object.fromEntries(scopedInvoices.map((invoice) => [invoice.id, invoice.party_name])) } };
       send({ type: "status", message: "Checking the numbers and preparing an answer…" });
       send({ type: "complete", answer: await answer(question, context) });
     } catch (error) { send({ type: "error", message: error instanceof Error ? error.message : "Ask Khaata could not answer." }); }
