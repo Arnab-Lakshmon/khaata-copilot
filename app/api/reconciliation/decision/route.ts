@@ -19,8 +19,12 @@ export async function POST(request: Request) {
     if (!shops[0]) throw new Error("Demo shop not found.");
     const transaction = await rest(base, headers, `transactions?id=eq.${transactionId}&shop_id=eq.${shops[0].id}&select=id,match_type,amount`);
     if (!transaction[0] || transaction[0].match_type !== "unmatched") return NextResponse.json({ error: "This transaction is no longer available for review." }, { status: 409 });
-    const invoice = await rest(base, headers, `invoices?id=eq.${invoiceId}&status=in.(unpaid,partial)&select=id,amount,status`);
-    if (!invoice[0]) return NextResponse.json({ error: "The proposed invoice is no longer open." }, { status: 409 });
+    const invoice = await rest(base, headers, `invoices?id=eq.${invoiceId}&select=id,amount,status`);
+    if (!invoice[0]) return NextResponse.json({ error: "The proposed invoice was not found." }, { status: 409 });
+    if (invoice[0].status === "paid") {
+      await rest(base, headers, "reconciliation_match_decisions", { method: "POST", body: JSON.stringify({ transaction_id: transactionId, proposed_invoice_id: invoiceId, decision: "rejected", confidence_score: Number(confidence) }) });
+      return NextResponse.json({ error: "The proposed invoice is already paid; this confirmation was rejected and logged." }, { status: 409 });
+    }
     await rest(base, headers, "reconciliation_match_decisions", { method: "POST", body: JSON.stringify({ transaction_id: transactionId, proposed_invoice_id: invoiceId, decision: action === "confirm" ? "confirmed" : "rejected", confidence_score: Number(confidence) }) });
     if (action === "confirm") {
       await rest(base, headers, `transactions?id=eq.${transactionId}`, { method: "PATCH", body: JSON.stringify({ matched_invoice_id: invoiceId, match_type: "fuzzy", confidence_score: Number(confidence) }) });
