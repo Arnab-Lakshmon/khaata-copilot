@@ -1,0 +1,23 @@
+- main [ref=f4e2]:
+  - generic [ref=f4e3]:
+    - link "← Khaata Copilot" [ref=f4e4] [cursor=pointer]:
+      - /url: /
+    - generic [ref=f4e5]:
+      - generic [ref=f4e6]:
+        - paragraph [ref=f4e7]: Payment intake
+        - heading "Match what came in." [level=1] [ref=f4e8]
+        - paragraph [ref=f4e9]: Exact payments settle first. Ambiguous payments wait for your review.
+        - generic [ref=f4e10]:
+          - text: Transactions
+          - generic [ref=f4e11]: (0 lines)
+          - textbox "Transactions (0 lines)" [ref=f4e12]:
+            - /placeholder: "Rajesh K — ₹4,500 — 2026-07-29\nUPI/NEHA STORES/₹1,250/29-07-2026"
+        - generic [ref=f4e13]:
+          - generic [ref=f4e14] [cursor=pointer]:
+            - text: Upload CSV
+            - button "Upload CSV" [ref=f4e15]
+          - button "Import & match" [ref=f4e16] [cursor=pointer]
+      - complementary [ref=f4e17]:
+        - paragraph [ref=f4e18]: Live agent reasoning stream
+        - paragraph [ref=f4e20]: Waiting for a batch.
+        - paragraph [ref=f4e21]: Exact checks run first. Fuzzy proposals show name, amount, and date evidence before you decide.

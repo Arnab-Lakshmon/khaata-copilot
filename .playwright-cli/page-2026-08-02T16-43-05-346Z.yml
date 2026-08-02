@@ -1,0 +1,24 @@
+- main [ref=f20e2]:
+  - generic [ref=f20e3]:
+    - navigation "Primary navigation" [ref=f20e4]:
+      - link "Khaata Copilot" [ref=f20e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f20e6]:
+        - link "Ledger" [ref=f20e7] [cursor=pointer]:
+          - /url: /ledger
+        - link "Reconciliation" [ref=f20e8] [cursor=pointer]:
+          - /url: /reconciliation
+        - link "Reminders" [ref=f20e9] [cursor=pointer]:
+          - /url: /reminders
+        - link "Health" [ref=f20e10] [cursor=pointer]:
+          - /url: /health
+    - generic [ref=f20e11]:
+      - generic [ref=f20e12]:
+        - paragraph [ref=f20e13]: Shop health
+        - heading "Know what needs care." [level=1] [ref=f20e14]
+        - paragraph [ref=f20e15]: One view of collections, payment matching, and the rhythm of your bookkeeping.
+      - generic [ref=f20e16]:
+        - generic [ref=f20e17]: —
+        - generic [ref=f20e22]:
+          - paragraph [ref=f20e23]: Health score
+          - paragraph [ref=f20e24]: Calculating from your shop data…

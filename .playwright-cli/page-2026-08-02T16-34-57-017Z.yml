@@ -1,0 +1,12 @@
+- main [ref=f1e2]:
+  - generic [ref=f1e3]:
+    - link "← Khaata Copilot" [ref=f1e4] [cursor=pointer]:
+      - /url: /
+    - generic [ref=f1e5]:
+      - paragraph [ref=f1e6]: Smart ledger capture
+      - heading "Say it like you’d say it." [level=1] [ref=f1e7]
+      - paragraph [ref=f1e8]: Turn a rough shop note into a clean record, then review it before anything is saved.
+    - generic [ref=f1e9]:
+      - text: Your note
+      - textbox "Sold 2kg rice to Priya, ₹180, unpaid" [ref=f1e10]
+      - button "Extract details" [ref=f1e11] [cursor=pointer]

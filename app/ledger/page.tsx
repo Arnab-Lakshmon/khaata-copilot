@@ -1,15 +1,170 @@
 "use client";
 import { useState } from "react";
 import type { ParsedLedger } from "../../lib/ledger";
+import AppNav from "../../components/AppNav";
 
 export default function LedgerPage() {
   const [text, setText] = useState("");
   const [parsed, setParsed] = useState<ParsedLedger | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [savedInvoice, setSavedInvoice] = useState<{ id: string; number: string } | null>(null);
-  async function parse() { setMessage(""); if (!text.trim()) return setMessage("Write a note first."); setBusy(true); const r = await fetch("/api/ledger/parse", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text }) }); const d = await r.json(); setBusy(false); if (!r.ok) return setMessage(d.error); setParsed(d.parsed); }
-  async function commit() { if (!parsed || parsed.amount === null || parsed.amount <= 0) return setMessage("Add a valid amount before confirming."); setBusy(true); const r = await fetch("/api/ledger/commit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ raw_text: text, parsed }) }); const d = await r.json(); setBusy(false); if (!r.ok) return setMessage(d.error); setMessage(d.invoice_number ? `Saved. Invoice ${d.invoice_number} created.` : "Saved to your ledger."); setSavedInvoice(d.invoice_id && d.invoice_number ? { id: d.invoice_id, number: d.invoice_number } : null); setParsed(null); setText(""); }
-  const update = (key: keyof ParsedLedger, value: string | boolean) => setParsed((p) => p ? { ...p, [key]: key === "amount" ? (value === "" ? null : Number(value)) : value } : p);
-  return <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16"><div className="mx-auto max-w-3xl"><a href="/" className="font-satoshi text-sm font-bold tracking-[0.16em] uppercase">← Khaata Copilot</a><div className="mt-20"><p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">Smart ledger capture</p><h1 className="font-tanker mt-4 text-6xl leading-none sm:text-8xl">Say it like you’d say it.</h1><p className="font-satoshi mt-6 max-w-xl text-lg text-[#17211d]/65">Turn a rough shop note into a clean record, then review it before anything is saved.</p></div><section className="mt-12 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-8"><label className="font-satoshi text-sm font-bold">Your note</label><textarea value={text} onChange={(e) => setText(e.target.value)} placeholder="Sold 2kg rice to Priya, ₹180, unpaid" className="font-satoshi mt-3 min-h-32 w-full resize-y rounded-2xl border border-[#17211d]/20 bg-[#f4f0e8] p-4 outline-none focus:border-[#d85b3f]"/><button onClick={parse} disabled={busy} className="font-satoshi mt-4 rounded-full bg-[#d85b3f] px-6 py-3 text-sm font-bold text-white disabled:opacity-50">{busy ? "Working…" : "Extract details"}</button>{message && <p className="font-satoshi mt-4 text-sm font-bold text-[#d85b3f]">{message}</p>}{savedInvoice && <a href={`/invoice/${savedInvoice.id}`} className="font-satoshi mt-4 inline-block rounded-full bg-[#17211d] px-5 py-3 text-sm font-bold text-white">View Invoice {savedInvoice.number}</a>}{parsed && <div className="mt-8 border-t border-[#17211d]/15 pt-6"><div className="flex items-center justify-between"><h2 className="font-satoshi text-xl font-bold">Review before saving</h2>{!parsed.paid_was_explicit && <span className="font-satoshi rounded-full bg-[#f1d5a5] px-3 py-1 text-xs font-bold">Payment status assumed unpaid</span>}</div><div className="mt-5 grid gap-4 sm:grid-cols-2">{([ ["type","Type"],["party_name","Party"],["amount","Amount (₹)"],["item_description","Description"]] as const).map(([key,label]) => <label key={key} className="font-satoshi text-sm font-bold">{label}<input value={parsed[key] ?? ""} onChange={(e) => update(key, e.target.value)} type={key === "amount" ? "number" : "text"} className="mt-2 w-full rounded-xl border border-[#17211d]/20 bg-white p-3 font-normal outline-none focus:border-[#d85b3f]"/></label>)}<label className="font-satoshi flex items-center gap-3 text-sm font-bold"><input type="checkbox" checked={parsed.paid} onChange={(e) => update("paid", e.target.checked)} className="h-5 w-5 accent-[#d85b3f]"/> Paid</label></div><div className="mt-6 flex gap-3"><button onClick={commit} disabled={busy} className="font-satoshi rounded-full bg-[#17211d] px-6 py-3 text-sm font-bold text-white disabled:opacity-50">Confirm & save</button><button onClick={() => setParsed(null)} className="font-satoshi rounded-full border border-[#17211d]/25 px-6 py-3 text-sm font-bold">Edit note</button></div></div>}</section></div></main>;
+  const [savedInvoice, setSavedInvoice] = useState<{
+    id: string;
+    number: string;
+  } | null>(null);
+  async function parse() {
+    setMessage("");
+    if (!text.trim()) return setMessage("Write a note first.");
+    setBusy(true);
+    const r = await fetch("/api/ledger/parse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    });
+    const d = await r.json();
+    setBusy(false);
+    if (!r.ok) return setMessage(d.error);
+    setParsed(d.parsed);
+  }
+  async function commit() {
+    if (!parsed || parsed.amount === null || parsed.amount <= 0)
+      return setMessage("Add a valid amount before confirming.");
+    setBusy(true);
+    const r = await fetch("/api/ledger/commit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ raw_text: text, parsed }),
+    });
+    const d = await r.json();
+    setBusy(false);
+    if (!r.ok) return setMessage(d.error);
+    setMessage(
+      d.invoice_number
+        ? `Saved. Invoice ${d.invoice_number} created.`
+        : "Saved to your ledger.",
+    );
+    setSavedInvoice(
+      d.invoice_id && d.invoice_number
+        ? { id: d.invoice_id, number: d.invoice_number }
+        : null,
+    );
+    setParsed(null);
+    setText("");
+  }
+  const update = (key: keyof ParsedLedger, value: string | boolean) =>
+    setParsed((p) =>
+      p
+        ? {
+            ...p,
+            [key]:
+              key === "amount" ? (value === "" ? null : Number(value)) : value,
+          }
+        : p,
+    );
+  return (
+    <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
+      <div className="mx-auto max-w-3xl">
+        <AppNav />
+        <div className="mt-20">
+          <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
+            Smart ledger capture
+          </p>
+          <h1 className="font-tanker mt-4 text-6xl leading-none sm:text-8xl">
+            Say it like you’d say it.
+          </h1>
+          <p className="font-satoshi mt-6 max-w-xl text-lg text-[#17211d]/65">
+            Turn a rough shop note into a clean record, then review it before
+            anything is saved.
+          </p>
+        </div>
+        <section className="mt-12 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-8">
+          <label className="font-satoshi text-sm font-bold">Your note</label>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Sold 2kg rice to Priya, ₹180, unpaid"
+            className="font-satoshi mt-3 min-h-32 w-full resize-y rounded-2xl border border-[#17211d]/20 bg-[#f4f0e8] p-4 outline-none focus:border-[#d85b3f]"
+          />
+          <button
+            onClick={parse}
+            disabled={busy}
+            className="font-satoshi mt-4 rounded-full bg-[#d85b3f] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
+          >
+            {busy ? "Working…" : "Extract details"}
+          </button>
+          {message && (
+            <p className="font-satoshi mt-4 text-sm font-bold text-[#d85b3f]">
+              {message}
+            </p>
+          )}
+          {savedInvoice && (
+            <a
+              href={`/invoice/${savedInvoice.id}`}
+              className="font-satoshi mt-4 inline-block rounded-full bg-[#17211d] px-5 py-3 text-sm font-bold text-white"
+            >
+              View Invoice {savedInvoice.number}
+            </a>
+          )}
+          {parsed && (
+            <div className="mt-8 border-t border-[#17211d]/15 pt-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-satoshi text-xl font-bold">
+                  Review before saving
+                </h2>
+                {!parsed.paid_was_explicit && (
+                  <span className="font-satoshi rounded-full bg-[#f1d5a5] px-3 py-1 text-xs font-bold">
+                    Payment status assumed unpaid
+                  </span>
+                )}
+              </div>
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                {(
+                  [
+                    ["type", "Type"],
+                    ["party_name", "Party"],
+                    ["amount", "Amount (₹)"],
+                    ["item_description", "Description"],
+                  ] as const
+                ).map(([key, label]) => (
+                  <label key={key} className="font-satoshi text-sm font-bold">
+                    {label}
+                    <input
+                      value={parsed[key] ?? ""}
+                      onChange={(e) => update(key, e.target.value)}
+                      type={key === "amount" ? "number" : "text"}
+                      className="mt-2 w-full rounded-xl border border-[#17211d]/20 bg-white p-3 font-normal outline-none focus:border-[#d85b3f]"
+                    />
+                  </label>
+                ))}
+                <label className="font-satoshi flex items-center gap-3 text-sm font-bold">
+                  <input
+                    type="checkbox"
+                    checked={parsed.paid}
+                    onChange={(e) => update("paid", e.target.checked)}
+                    className="h-5 w-5 accent-[#d85b3f]"
+                  />{" "}
+                  Paid
+                </label>
+              </div>
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={commit}
+                  disabled={busy}
+                  className="font-satoshi rounded-full bg-[#17211d] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
+                >
+                  Confirm & save
+                </button>
+                <button
+                  onClick={() => setParsed(null)}
+                  className="font-satoshi rounded-full border border-[#17211d]/25 px-6 py-3 text-sm font-bold"
+                >
+                  Edit note
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
+  );
 }
