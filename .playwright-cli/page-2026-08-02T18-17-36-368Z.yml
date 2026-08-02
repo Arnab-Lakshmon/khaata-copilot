@@ -1,0 +1,24 @@
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e20]
+  - main [ref=f2e21]:
+    - generic [ref=f2e22]:
+      - navigation "Primary navigation" [ref=f2e23]:
+        - link "Khaata Copilot" [ref=f2e24] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f2e25]:
+          - link "Ledger" [ref=f2e26] [cursor=pointer]:
+            - /url: /ledger
+          - link "Reconciliation" [ref=f2e27] [cursor=pointer]:
+            - /url: /reconciliation
+          - link "Reminders" [ref=f2e28] [cursor=pointer]:
+            - /url: /reminders
+          - link "Health" [ref=f2e29] [cursor=pointer]:
+            - /url: /health
+      - generic [ref=f2e30]:
+        - paragraph [ref=f2e31]: Smart ledger capture
+        - heading "Say it like you’d say it." [level=1] [ref=f2e32]
+        - paragraph [ref=f2e33]: Turn a rough shop note into a clean record, then review it before anything is saved.
+      - generic [ref=f2e34]:
+        - text: Your note
+        - textbox "Sold 2kg rice to Priya, ₹180, unpaid" [ref=f2e35]
+        - button "Extract details" [ref=f2e36] [cursor=pointer]

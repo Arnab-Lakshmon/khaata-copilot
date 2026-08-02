@@ -1,0 +1,21 @@
+- main [ref=f8e2]:
+  - generic [ref=f8e3]:
+    - navigation "Primary navigation" [ref=f8e4]:
+      - link "Khaata Copilot" [ref=f8e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=f8e6]:
+        - link "Ledger" [ref=f8e7] [cursor=pointer]:
+          - /url: /ledger
+        - link "Reconciliation" [ref=f8e8] [cursor=pointer]:
+          - /url: /reconciliation
+        - link "Reminders" [ref=f8e9] [cursor=pointer]:
+          - /url: /reminders
+        - link "Health" [ref=f8e10] [cursor=pointer]:
+          - /url: /health
+    - generic [ref=f8e12]:
+      - paragraph [ref=f8e13]: Your shop, in sync
+      - heading "Make every rupee count." [level=1] [ref=f8e14]
+      - paragraph [ref=f8e15]: A calm, clear command centre for Indian shop owners to keep track of sales, payments, and what needs attention next.
+      - link "Enter as Demo Shop" [ref=f8e17] [cursor=pointer]:
+        - /url: /ledger
+    - paragraph [ref=f8e19]: A simple start for a smarter shop.
