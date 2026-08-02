@@ -21,15 +21,15 @@ export default function Home() {
       <div className={`mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-7 transition-[transform,opacity] duration-[450ms] ease-in-out sm:px-10 lg:px-16 ${isEntering ? "scale-[1.08] opacity-0" : "scale-100 opacity-100"}`}>
         <AppNav />
 
-        <section className="flex flex-1 items-center py-20 sm:py-28">
-          <div className="max-w-4xl">
+        <section className="flex flex-1 items-center py-20">
+          <div className="mx-auto max-w-5xl text-center">
             <p className="font-satoshi mb-7 text-sm font-medium tracking-[0.16em] text-[#d85b3f] uppercase">
               Your shop, in sync
             </p>
-            <h1 className="font-tanker max-w-4xl text-[clamp(4rem,12vw,9.5rem)] leading-[0.86] tracking-[-0.03em] text-[#17211d]">
+            <h1 className="font-tanker mx-auto max-w-5xl text-[clamp(4rem,12vw,9.5rem)] leading-[0.86] tracking-[-0.03em] text-[#17211d]">
               Make every rupee count.
             </h1>
-            <p className="font-satoshi mt-9 max-w-xl text-lg leading-8 text-[#17211d]/70 sm:text-xl">
+            <p className="font-satoshi mx-auto mt-9 max-w-2xl text-lg leading-8 text-[#17211d]/70 sm:text-xl">
               A calm, clear command centre for Indian shop owners to keep track
               of sales, payments, and what needs attention next.
             </p>
