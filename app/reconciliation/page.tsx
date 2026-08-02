@@ -236,6 +236,7 @@ export default function ReconciliationPage() {
             <PixelHeader
               text="LIVE AGENT REASONING STREAM"
               active={busy}
+              pixelColor="#17211d"
               className="font-array text-xl font-medium tracking-[.12em] text-[#e9e1d2]/75 uppercase sm:text-2xl"
             />
             <div
