@@ -229,7 +229,9 @@ export default function ReconciliationPage() {
               </p>
             )}
           </section>
-          <aside className="rounded-[1.75rem] border border-[#17211d]/20 bg-[#17211d] p-5 text-[#e9e1d2] shadow-[6px_6px_0_#d85b3f] sm:p-7">
+          <aside
+            className={`rounded-[1.75rem] border border-[#17211d]/20 bg-[#17211d] p-5 text-[#e9e1d2] sm:p-7 ${busy ? "shadow-[6px_6px_0_#d85b3f]" : "shadow-none"}`}
+          >
             <p className="font-array text-xs tracking-[.15em] text-[#e9e1d2]/60 uppercase">
               Live agent reasoning stream
             </p>
@@ -240,7 +242,10 @@ export default function ReconciliationPage() {
             >
               {stream.length ? (
                 stream.map((line, index) => (
-                  <p key={`${line}-${index}`} className="mb-3">
+                  <p
+                    key={`${line}-${index}`}
+                    className="animate-fade-in-up mb-3"
+                  >
                     <span className="mr-2 text-[#d85b3f]">›</span>
                     {line}
                   </p>
@@ -393,6 +398,28 @@ export default function ReconciliationPage() {
           </section>
         )}
       </div>
+      <style jsx>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(0.35rem);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 200ms ease-out both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .animate-fade-in-up {
+            animation: none;
+          }
+        }
+      `}</style>
     </main>
   );
 }
