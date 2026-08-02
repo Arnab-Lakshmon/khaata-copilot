@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AppNav from "../components/AppNav";
-import GlareHover from "../components/GlareHover";
 
 export default function Home() {
   const router = useRouter();
@@ -35,24 +34,13 @@ export default function Home() {
               of sales, payments, and what needs attention next.
             </p>
             <div className="mx-auto mt-10 flex w-fit justify-center">
-              <GlareHover
-                width="100%"
-                height="auto"
-                background="transparent"
-                borderColor="transparent"
-                borderRadius="9999px"
-                glareColor="#FAF6F0"
-                glareOpacity={0.12}
-                glareAngle={-45}
+              <Link
+                href="/ledger"
+                onClick={enterDemoShop}
+                className="font-satoshi inline-flex items-center rounded-full bg-[#d85b3f] px-9 py-5 text-base font-bold text-white shadow-[5px_5px_0_#17211d] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[3px_3px_0_#17211d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]"
               >
-                <Link
-                  href="/ledger"
-                  onClick={enterDemoShop}
-                  className="font-satoshi inline-flex items-center rounded-full bg-[#d85b3f] px-9 py-5 text-base font-bold text-white shadow-[5px_5px_0_#17211d] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[3px_3px_0_#17211d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]"
-                >
-                  Enter as Demo Shop
-                </Link>
-              </GlareHover>
+                Enter as Demo Shop
+              </Link>
             </div>
           </div>
         </section>
