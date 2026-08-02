@@ -1,17 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import AppNav from "../components/AppNav";
 
 export default function Home() {
+  const router = useRouter();
+  const [isEntering, setIsEntering] = useState(false);
+
+  function enterDemoShop(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    if (isEntering) return;
+    setIsEntering(true);
+    window.setTimeout(() => router.push("/ledger"), 450);
+  }
+
   return (
     <main className="min-h-screen bg-[#f4f0e8] text-[#17211d]">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-7 sm:px-10 lg:px-16">
-        <header className="flex items-center justify-between border-b border-[#17211d]/15 pb-6">
-          <p className="font-satoshi text-sm font-bold tracking-[0.18em] uppercase">
-            Khaata Copilot
-          </p>
-          <p className="font-satoshi text-xs tracking-[0.14em] text-[#17211d]/60 uppercase">
-            Built for everyday business
-          </p>
-        </header>
+      <div className={`mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-7 transition-[transform,opacity] duration-[450ms] ease-in-out sm:px-10 lg:px-16 ${isEntering ? "scale-[1.08] opacity-0" : "scale-100 opacity-100"}`}>
+        <AppNav />
 
         <section className="flex flex-1 items-center py-20 sm:py-28">
           <div className="max-w-4xl">
@@ -28,6 +36,7 @@ export default function Home() {
             <div className="mt-10 flex flex-wrap gap-4">
             <Link
               href="/ledger"
+              onClick={enterDemoShop}
               className="font-satoshi mt-10 inline-flex items-center rounded-full bg-[#d85b3f] px-7 py-4 text-sm font-bold text-white shadow-[5px_5px_0_#17211d] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[3px_3px_0_#17211d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d85b3f]"
             >
               Enter as Demo Shop
