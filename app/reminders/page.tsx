@@ -141,7 +141,7 @@ export default function RemindersPage() {
             </p>
             <p className="font-tanker mt-3 text-4xl">GSTR-3B</p>
             <p className="font-satoshi mt-2 text-sm text-white/65">
-              Typically due on {gstDeadline()} for the previous month.
+              This month&apos;s GSTR-3B is typically due {gstDeadline()}.
             </p>
           </div>
         </div>
