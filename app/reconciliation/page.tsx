@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, useRef, useState } from "react";
+import PixelHeader from "@/components/PixelHeader";
 import AppNav from "../../components/AppNav";
 
 type Result = {
@@ -232,9 +233,11 @@ export default function ReconciliationPage() {
           <aside
             className={`reasoning-stream-panel rounded-[1.75rem] border border-[#17211d]/20 bg-[#17211d] p-5 text-[#e9e1d2] sm:p-7 ${busy ? "shadow-[6px_6px_0_#d85b3f]" : "shadow-none"}`}
           >
-            <p className="font-array text-xl font-medium tracking-[.12em] text-[#e9e1d2]/75 uppercase sm:text-2xl">
-              Live agent reasoning stream
-            </p>
+            <PixelHeader
+              text="LIVE AGENT REASONING STREAM"
+              active={busy}
+              className="font-array text-xl font-medium tracking-[.12em] text-[#e9e1d2]/75 uppercase sm:text-2xl"
+            />
             <div
               ref={streamRef}
               aria-live="polite"
