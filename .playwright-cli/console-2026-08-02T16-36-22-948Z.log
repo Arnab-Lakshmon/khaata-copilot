@@ -1,5 +1,0 @@
-[     554ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:38559
-[   17539ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
-[   18313ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
-[   18354ms] [LOG] [Fast Refresh] done in 40ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
-[   19586ms] [LOG] [Fast Refresh] done in 1272ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
