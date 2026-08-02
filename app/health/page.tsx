@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import PixelHeader from "@/components/PixelHeader";
 import AppNav from "../../components/AppNav";
 
 type Invoice = {
@@ -220,9 +221,12 @@ export default function HealthPage() {
               ))}
             </section>
             <section className="mt-12 rounded-[2rem] border border-[#17211d]/15 bg-[#17211d] p-5 text-white shadow-[6px_6px_0_#d85b3f] sm:p-8">
-              <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#f1d5a5] uppercase">
-                Ask Khaata
-              </p>
+              <PixelHeader
+                text="ASK KHAATA"
+                active={asking}
+                pixelColor="#17211d"
+                className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#f1d5a5] uppercase"
+              />
               <h2 className="font-satoshi mt-2 text-2xl font-bold">
                 What do you want to know?
               </h2>
