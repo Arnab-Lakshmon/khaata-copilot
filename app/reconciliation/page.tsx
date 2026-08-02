@@ -248,7 +248,7 @@ export default function ReconciliationPage() {
                 stream.map((line, index) => (
                   <p
                     key={`${line}-${index}`}
-                    className="animate-fade-in-up mb-3 font-medium"
+                    className="font-cabinet animate-fade-in-up mb-3 font-medium"
                   >
                     <span className="mr-2 text-[#d85b3f]">›</span>
                     {line}

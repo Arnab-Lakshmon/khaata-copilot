@@ -1,4 +1,4 @@
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=tanker@400&f[]=array@400&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=tanker@400&f[]=array@400&f[]=cabinet-grotesk@400,500,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -35,6 +35,10 @@ body {
 
 .font-array {
   font-family: var(--font-array);
+}
+
+.font-cabinet {
+  font-family: 'Cabinet Grotesk', sans-serif;
 }
 
 @layer utilities {
