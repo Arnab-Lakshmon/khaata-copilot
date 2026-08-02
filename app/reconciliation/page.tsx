@@ -230,9 +230,9 @@ export default function ReconciliationPage() {
             )}
           </section>
           <aside
-            className={`rounded-[1.75rem] border border-[#17211d]/20 bg-[#17211d] p-5 text-[#e9e1d2] sm:p-7 ${busy ? "shadow-[6px_6px_0_#d85b3f]" : "shadow-none"}`}
+            className={`reasoning-stream-panel rounded-[1.75rem] border border-[#17211d]/20 bg-[#17211d] p-5 text-[#e9e1d2] sm:p-7 ${busy ? "shadow-[6px_6px_0_#d85b3f]" : "shadow-none"}`}
           >
-            <p className="font-array text-xs tracking-[.15em] text-[#e9e1d2]/60 uppercase">
+            <p className="font-array text-xl font-medium tracking-[.12em] text-[#e9e1d2]/75 uppercase sm:text-2xl">
               Live agent reasoning stream
             </p>
             <div
@@ -244,7 +244,7 @@ export default function ReconciliationPage() {
                 stream.map((line, index) => (
                   <p
                     key={`${line}-${index}`}
-                    className="animate-fade-in-up mb-3"
+                    className="animate-fade-in-up mb-3 font-medium"
                   >
                     <span className="mr-2 text-[#d85b3f]">›</span>
                     {line}
@@ -412,6 +412,11 @@ export default function ReconciliationPage() {
 
         .animate-fade-in-up {
           animation: fadeInUp 200ms ease-out both;
+        }
+
+        .reasoning-stream-panel .font-array {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
         @media (prefers-reduced-motion: reduce) {
