@@ -139,7 +139,7 @@ export default function HealthPage() {
         <header className="mt-16 flex flex-col justify-between gap-8 border-b border-[#17211d]/15 pb-10 lg:flex-row lg:items-end">
           <div>
             <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
-              Shop health
+              Shop health dashboard
             </p>
             <h1 className="font-tanker mt-4 text-6xl leading-none sm:text-8xl">
               Know what needs care.
@@ -200,10 +200,10 @@ export default function HealthPage() {
           <>
             <section className="mt-10 grid gap-4 sm:grid-cols-3">
               {[
-                ["Collection rate", health.collectionRate, "50% weight"],
-                ["Reconciliation", health.reconciliationRate, "30% weight"],
-                ["Bookkeeping ≤ 3 days", health.bookkeepingRate, "20% weight"],
-              ].map(([label, value, weight]) => (
+                ["Collection rate", health.collectionRate, "50% weight", "% of invoiced amount actually received"],
+                ["Reconciliation", health.reconciliationRate, "30% weight", "% of payments matched to a sale"],
+                ["Bookkeeping ≤ 3 days", health.bookkeepingRate, "20% weight", "% of entries logged within 3 days"],
+              ].map(([label, value, weight, subtitle]) => (
                 <article
                   key={String(label)}
                   className="rounded-2xl border border-[#17211d]/15 bg-white/55 p-5"
@@ -216,6 +216,9 @@ export default function HealthPage() {
                   </p>
                   <p className="font-satoshi mt-2 text-sm text-[#17211d]/55">
                     {weight}
+                  </p>
+                  <p className="font-satoshi mt-1 text-xs leading-5 text-[#17211d]/50">
+                    {subtitle}
                   </p>
                 </article>
               ))}

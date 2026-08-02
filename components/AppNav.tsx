@@ -7,7 +7,7 @@ import GlareHover from "./GlareHover";
 const links = [
   ["Home", "/"],
   ["Ledger", "/ledger"],
-  ["Reconciliation", "/reconciliation"],
+  ["Payments", "/reconciliation"],
   ["Reminders", "/reminders"],
   ["Health", "/health"],
 ] as const;
