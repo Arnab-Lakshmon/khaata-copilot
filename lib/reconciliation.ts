@@ -9,6 +9,7 @@ export type OpenInvoice = {
   id: string;
   invoice_number: string;
   amount: number | string;
+  remainingBalance: number;
   due_date: string;
   party_name: string;
 };
@@ -120,7 +121,7 @@ export function decideFuzzyMatch(transaction: ImportedTransaction, payerName: st
   if (transaction.amount === null) return null;
   const transactionAmount = transaction.amount;
   const candidates = invoices.map((invoice) => {
-    const invoiceAmount = Number(invoice.amount);
+    const invoiceAmount = Number(invoice.remainingBalance);
     const possiblePartial = transactionAmount < invoiceAmount;
     const possibleSplit = splitInvoiceIds.has(invoice.id);
     const amountSimilarity = transactionAmount === invoiceAmount || possibleSplit ? 100 : possiblePartial ? Math.max(35, Math.round((transactionAmount / invoiceAmount) * 100)) : Math.max(0, Math.round(100 - ((transactionAmount - invoiceAmount) / invoiceAmount) * 100));

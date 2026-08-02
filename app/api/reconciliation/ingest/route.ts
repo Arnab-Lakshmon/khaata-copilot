@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 
 type InvoiceRow = { id: string; ledger_entry_id: string; invoice_number: string; amount: number | string; due_date: string; status: string };
 type LedgerRow = { id: string; party_name: string };
+type ConfirmedTransactionRow = { matched_invoice_id: string; amount: number | string };
 type Pending = { id: string; rawLine: string; transaction: ReturnType<typeof parseTransactionLine>; payerName: string };
 
 function configuredClient() {
@@ -51,10 +52,13 @@ export async function POST(request: Request) {
       const shops = await rest<{ id: string }[]>(base, headers, "shops?demo_flag=eq.true&select=id&limit=1");
       if (!shops[0]) throw new Error("Demo shop not found.");
       const invoices = await rest<InvoiceRow[]>(base, headers, "invoices?status=in.(unpaid,partial)&select=id,ledger_entry_id,invoice_number,amount,due_date,status");
+      const confirmedTransactions = await rest<ConfirmedTransactionRow[]>(base, headers, `transactions?shop_id=eq.${shops[0].id}&matched_invoice_id=not.is.null&select=matched_invoice_id,amount`);
+      const confirmedAmountByInvoice = new Map<string, number>();
+      for (const transaction of confirmedTransactions) confirmedAmountByInvoice.set(transaction.matched_invoice_id, (confirmedAmountByInvoice.get(transaction.matched_invoice_id) || 0) + Number(transaction.amount || 0));
       const ledgerIds = invoices.map((invoice) => invoice.ledger_entry_id).filter(Boolean);
       const ledgerRows = ledgerIds.length ? await rest<LedgerRow[]>(base, headers, `ledger_entries?id=in.(${ledgerIds.join(",")})&shop_id=eq.${shops[0].id}&select=id,party_name`) : [];
       const partyByLedgerId = new Map(ledgerRows.map((row) => [row.id, row.party_name]));
-      const openInvoices: OpenInvoice[] = invoices.filter((invoice) => partyByLedgerId.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: partyByLedgerId.get(invoice.ledger_entry_id)! }));
+      const openInvoices: OpenInvoice[] = invoices.filter((invoice) => partyByLedgerId.has(invoice.ledger_entry_id)).map((invoice) => ({ ...invoice, party_name: partyByLedgerId.get(invoice.ledger_entry_id)!, remainingBalance: invoice.status === "partial" ? Math.max(0, Number(invoice.amount) - (confirmedAmountByInvoice.get(invoice.id) || 0)) : Number(invoice.amount) }));
       const results: unknown[] = [];
       const pending: Pending[] = [];
       for (let index = 0; index < lines.length; index += 1) {
