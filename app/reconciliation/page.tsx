@@ -203,7 +203,7 @@ export default function ReconciliationPage() {
                 placeholder={
                   "Rajesh K — ₹4,500 — 2026-07-29\nUPI/NEHA STORES/₹1,250/29-07-2026"
                 }
-                className="mt-3 min-h-56 w-full rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
+                className="mt-3 min-h-40 w-full overflow-y-auto rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
               />
             </label>
             <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -242,7 +242,7 @@ export default function ReconciliationPage() {
             <div
               ref={streamRef}
               aria-live="polite"
-              className="font-array mt-5 h-80 overflow-y-auto border-y border-[#e9e1d2]/15 py-4 text-sm leading-6"
+              className="font-array mt-5 h-48 overflow-y-auto border-y border-[#e9e1d2]/15 py-4 text-sm leading-6"
             >
               {stream.length ? (
                 stream.map((line, index) => (
@@ -258,7 +258,7 @@ export default function ReconciliationPage() {
                 <p className="text-[#e9e1d2]/45">Waiting for a batch.</p>
               )}
             </div>
-            <p className="font-satoshi mt-5 text-xs leading-5 text-[#e9e1d2]/55">
+            <p className="font-satoshi mt-3 text-xs leading-5 text-[#e9e1d2]/55">
               Exact checks run first. Fuzzy proposals show name, amount, and
               date evidence before you decide.
             </p>
