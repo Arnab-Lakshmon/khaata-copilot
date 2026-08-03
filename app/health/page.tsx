@@ -175,6 +175,27 @@ export default function HealthPage() {
         {error && (
           <p className="font-satoshi mt-8 font-bold text-[#d85b3f]">{error}</p>
         )}
+        {!health && !error && (
+          <article className="h-full animate-pulse rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5 lg:col-start-1 lg:row-start-2">
+            <div className="flex items-center gap-5 border-b border-[#17211d]/15 pb-5">
+              <div className="h-28 w-28 shrink-0 rounded-full border-[10px] border-[#17211d]/10" />
+              <div className="space-y-3">
+                <div className="h-3 w-24 rounded bg-[#17211d]/10" />
+                <div className="h-3 w-40 rounded bg-[#17211d]/10" />
+              </div>
+            </div>
+            <div className="mt-4 grid h-[145px] grid-cols-3 divide-x divide-[#17211d]/15">
+              {[0, 1, 2].map((item) => (
+                <div key={item} className="space-y-3 px-3 first:pl-0 last:pr-0 sm:px-4">
+                  <div className="h-3 w-24 rounded bg-[#17211d]/10" />
+                  <div className="h-8 w-16 rounded bg-[#17211d]/10" />
+                  <div className="h-3 w-20 rounded bg-[#17211d]/10" />
+                  <div className="h-3 w-full rounded bg-[#17211d]/10" />
+                </div>
+              ))}
+            </div>
+          </article>
+        )}
         {health && (
           <>
             <section className="contents">
