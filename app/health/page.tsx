@@ -198,7 +198,7 @@ export default function HealthPage() {
         )}
         {health && (
           <>
-            <section className="mt-6 grid gap-4 lg:h-[340px] lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+            <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
               <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-6">
                 <div className="flex items-center gap-5 border-b border-[#17211d]/15 pb-5">
                   <div className="relative h-28 w-28 shrink-0">
@@ -235,7 +235,7 @@ export default function HealthPage() {
                 ))}
                 </div>
               </article>
-              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white sm:p-6">
+              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white shadow-[5px_5px_0_#17211d] sm:p-6">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
@@ -274,7 +274,7 @@ export default function HealthPage() {
               <div
                 ref={answerRef}
                 aria-live="polite"
-                className="mt-4 min-h-0 flex-1 overflow-y-auto rounded-xl bg-white/10 p-3"
+                  className="mt-4 min-h-0 max-h-52 flex-1 overflow-y-auto rounded-xl bg-white/10 p-3"
               >
                 <p className="font-satoshi whitespace-pre-wrap text-xs leading-5">
                   {answer || "Your answer will appear here."}
