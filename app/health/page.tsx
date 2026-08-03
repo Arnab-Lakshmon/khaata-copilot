@@ -259,7 +259,7 @@ export default function HealthPage() {
               </div>
               </article>
             </section>
-            <section className="rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
+            <section className="rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5 lg:col-span-2">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Accounts receivable
               </p>
