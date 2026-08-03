@@ -180,19 +180,19 @@ export default function ReconciliationPage() {
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <AppNav />
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
+        <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
           <section>
             <p className="font-satoshi text-sm font-bold tracking-[.16em] text-[#d85b3f] uppercase">
               Payment intake
             </p>
-            <h1 className="font-tanker mt-4 text-6xl leading-[.88] sm:text-8xl">
+            <h1 className="font-tanker mt-4 text-6xl leading-[.88] sm:text-7xl">
               Match what came in.
             </h1>
-            <p className="font-satoshi mt-4 max-w-xl text-lg leading-8 text-[#17211d]/65">
+            <p className="font-satoshi mt-3 max-w-xl text-lg leading-8 text-[#17211d]/65">
               Exact payments settle first. Ambiguous payments wait for your
               review.
             </p>
-            <label className="font-satoshi mt-6 block text-sm font-bold">
+            <label className="font-satoshi mt-4 block text-sm font-bold">
               Transactions{" "}
               <span className="font-normal text-[#17211d]/55">
                 ({lines.length} lines)
@@ -203,7 +203,7 @@ export default function ReconciliationPage() {
                 placeholder={
                   "Rajesh K — ₹4,500 — 2026-07-29\nUPI/NEHA STORES/₹1,250/29-07-2026"
                 }
-                className="mt-3 min-h-40 w-full overflow-y-auto rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
+                className="mt-3 min-h-32 w-full overflow-y-auto rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
               />
             </label>
             <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -242,7 +242,7 @@ export default function ReconciliationPage() {
             <div
               ref={streamRef}
               aria-live="polite"
-              className="font-array mt-5 h-48 overflow-y-auto border-y border-[#e9e1d2]/15 py-4 text-sm leading-6"
+              className="font-array mt-5 h-40 overflow-y-auto border-y border-[#e9e1d2]/15 py-4 text-sm leading-6"
             >
               {stream.length ? (
                 stream.map((line, index) => (
