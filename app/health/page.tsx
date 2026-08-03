@@ -251,7 +251,7 @@ export default function HealthPage() {
               <div
                 ref={answerRef}
                 aria-live="polite"
-                  className="mt-4 min-h-0 max-h-52 flex-1 overflow-y-auto rounded-xl bg-white/10 p-3"
+                  className="mt-4 min-h-0 flex-1 overflow-y-auto rounded-xl bg-white/10 p-3"
               >
                 <p className="font-satoshi whitespace-pre-wrap text-xs leading-5">
                   {answer || "Your answer will appear here."}
@@ -259,7 +259,7 @@ export default function HealthPage() {
               </div>
               </article>
             </section>
-            <section className="mt-2 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
+            <section className="rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Accounts receivable
               </p>
