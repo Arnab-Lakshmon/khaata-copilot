@@ -136,12 +136,12 @@ export default function HealthPage() {
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <AppNav />
-        <header className="mt-16 flex flex-col justify-between gap-8 border-b border-[#17211d]/15 pb-10 lg:flex-row lg:items-end">
+        <header className="mt-10 flex flex-col justify-between gap-6 border-b border-[#17211d]/15 pb-6 lg:flex-row lg:items-end">
           <div>
             <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
               Shop health dashboard
             </p>
-            <h1 className="font-tanker mt-4 text-6xl leading-none sm:text-8xl">
+            <h1 className="font-tanker mt-4 text-6xl leading-none sm:text-7xl">
               Know what needs care.
             </h1>
             <p className="font-satoshi mt-6 max-w-xl text-lg leading-8 text-[#17211d]/65">
@@ -198,7 +198,7 @@ export default function HealthPage() {
         )}
         {health && (
           <>
-            <section className="mt-10 grid gap-4 sm:grid-cols-3">
+            <section className="mt-6 grid gap-3 sm:grid-cols-4">
               {[
                 ["Collection rate", health.collectionRate, "50% weight", "% of invoiced amount actually received"],
                 ["Reconciliation", health.reconciliationRate, "30% weight", "% of payments matched to a sale"],
@@ -206,15 +206,15 @@ export default function HealthPage() {
               ].map(([label, value, weight, subtitle]) => (
                 <article
                   key={String(label)}
-                  className="rounded-2xl border border-[#17211d]/15 bg-white/55 p-5"
+                  className="rounded-2xl border border-[#17211d]/15 bg-white/55 p-4"
                 >
                   <p className="font-satoshi text-xs font-bold tracking-[0.12em] text-[#17211d]/50 uppercase">
                     {label}
                   </p>
-                  <p className="font-tanker mt-3 text-5xl">
+                  <p className="font-tanker mt-2 text-4xl">
                     {pct(Number(value))}
                   </p>
-                  <p className="font-satoshi mt-2 text-sm text-[#17211d]/55">
+                  <p className="font-satoshi mt-1 text-sm text-[#17211d]/55">
                     {weight}
                   </p>
                   <p className="font-satoshi mt-1 text-xs leading-5 text-[#17211d]/50">
@@ -222,15 +222,14 @@ export default function HealthPage() {
                   </p>
                 </article>
               ))}
-            </section>
-            <section className="mt-12 rounded-[2rem] border border-[#17211d]/15 bg-[#17211d] p-5 text-white shadow-[6px_6px_0_#d85b3f] sm:p-8">
+              <article className="h-full rounded-2xl border border-[#d85b3f] bg-[#17211d] p-4 text-white">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
                 pixelColor="#17211d"
                 className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#f1d5a5] uppercase"
               />
-              <h2 className="font-satoshi mt-2 text-2xl font-bold">
+              <h2 className="font-satoshi mt-1 text-lg font-bold">
                 What do you want to know?
               </h2>
               <form
@@ -238,38 +237,39 @@ export default function HealthPage() {
                   event.preventDefault();
                   void ask();
                 }}
-                className="mt-6 flex flex-col gap-3 sm:flex-row"
+                className="mt-3 flex flex-col gap-2"
               >
                 <input
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
                   maxLength={500}
                   placeholder="Who owes me the most money?"
-                  className="font-satoshi min-w-0 flex-1 rounded-xl border border-white/20 bg-white px-4 py-3 text-[#17211d] outline-none"
+                  className="font-satoshi min-w-0 flex-1 rounded-xl border border-white/20 bg-white px-3 py-2 text-sm text-[#17211d] outline-none"
                 />
                 <button
                   disabled={asking || !question.trim()}
-                  className="font-satoshi rounded-xl bg-[#d85b3f] px-6 py-3 text-sm font-bold text-white disabled:opacity-50"
+                  className="font-satoshi rounded-xl bg-[#d85b3f] px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
                 >
                   {asking ? "Thinking…" : "Ask"}
                 </button>
               </form>
               {askStatus && (
-                <p className="font-satoshi mt-4 text-sm text-white/60">
+                <p className="font-satoshi mt-2 text-xs text-white/60">
                   {askStatus}
                 </p>
               )}
               <div
                 ref={answerRef}
                 aria-live="polite"
-                className="mt-5 max-h-52 overflow-y-auto rounded-xl bg-white/10 p-4"
+                className="mt-3 max-h-24 overflow-y-auto rounded-xl bg-white/10 p-3"
               >
-                <p className="font-satoshi whitespace-pre-wrap text-sm leading-6">
+                <p className="font-satoshi whitespace-pre-wrap text-xs leading-5">
                   {answer || "Your answer will appear here."}
                 </p>
               </div>
+              </article>
             </section>
-            <section className="mt-12 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-8">
+            <section className="mt-6 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-6">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Accounts receivable
               </p>
