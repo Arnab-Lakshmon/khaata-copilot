@@ -212,7 +212,7 @@ export default function HealthPage() {
                 ))}
                 </div>
               </article>
-              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-4 text-white shadow-[5px_5px_0_#17211d] sm:p-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-4 pb-2 text-white shadow-[5px_5px_0_#17211d] sm:p-5 sm:pb-3 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
@@ -259,7 +259,7 @@ export default function HealthPage() {
               </div>
               </article>
             </section>
-            <section className="mt-4 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
+            <section className="mt-2 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Accounts receivable
               </p>
