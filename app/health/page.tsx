@@ -136,8 +136,8 @@ export default function HealthPage() {
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <AppNav />
-        <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
-        <header className="flex flex-col justify-between gap-4 border-b border-[#17211d]/15 pb-5 lg:col-start-1 lg:row-start-1">
+        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
+        <header className="flex flex-col justify-between gap-3 border-b border-[#17211d]/15 pb-4 lg:col-start-1 lg:row-start-1">
           <div>
             <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
               Shop health dashboard
@@ -145,18 +145,17 @@ export default function HealthPage() {
             <h1 className="font-tanker mt-4 text-6xl leading-none sm:text-7xl">
               Know what needs care.
             </h1>
-            <p className="font-satoshi mt-6 max-w-xl text-lg leading-8 text-[#17211d]/65">
+            <p className="font-satoshi mt-4 max-w-xl text-lg leading-8 text-[#17211d]/65">
               One view of collections, payment matching, and the rhythm of your
               bookkeeping.
             </p>
           </div>
-          <div>
           <div className="hidden">
               <span>
                 {health ? score : "—"}
               </span>
             </div>
-            <div>
+            <div className="hidden">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Health score
               </p>
@@ -170,7 +169,6 @@ export default function HealthPage() {
                   : "Calculating from your shop data…"}
               </p>
             </div>
-          </div>
         </header>
         {error && (
           <p className="font-satoshi mt-8 font-bold text-[#d85b3f]">{error}</p>
@@ -178,7 +176,7 @@ export default function HealthPage() {
         {health && (
           <>
             <section className="contents">
-              <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-6 lg:col-start-1 lg:row-start-2">
+              <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5 lg:col-start-1 lg:row-start-2">
                 <div className="flex items-center gap-5 border-b border-[#17211d]/15 pb-5">
                   <div className="relative h-28 w-28 shrink-0">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
@@ -194,7 +192,7 @@ export default function HealthPage() {
                     </p>
                   </div>
                 </div>
-                <div className="mt-5 grid h-[145px] grid-cols-3 divide-x divide-[#17211d]/15">
+                <div className="mt-4 grid h-[145px] grid-cols-3 divide-x divide-[#17211d]/15">
                 {[
                 ["Collection rate", health.collectionRate, "50% weight", "% of invoiced amount actually received"],
                 ["Reconciliation", health.reconciliationRate, "30% weight", "% of payments matched to a sale"],
@@ -214,7 +212,7 @@ export default function HealthPage() {
                 ))}
                 </div>
               </article>
-              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white shadow-[5px_5px_0_#17211d] sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-4 text-white shadow-[5px_5px_0_#17211d] sm:p-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
@@ -261,7 +259,7 @@ export default function HealthPage() {
               </div>
               </article>
             </section>
-            <section className="mt-6 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-6">
+            <section className="mt-4 rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-4 shadow-[6px_6px_0_#17211d] sm:p-5">
               <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">
                 Accounts receivable
               </p>
