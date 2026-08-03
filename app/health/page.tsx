@@ -149,7 +149,7 @@ export default function HealthPage() {
               bookkeeping.
             </p>
           </div>
-          <div className="flex items-center gap-6 rounded-[1.5rem] border border-[#17211d]/15 bg-white/60 p-5">
+          <div className="hidden flex items-center gap-6 rounded-[1.5rem] border border-[#17211d]/15 bg-white/60 p-5">
             <div className="relative h-36 w-36">
               <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
                 <circle
@@ -198,38 +198,51 @@ export default function HealthPage() {
         )}
         {health && (
           <>
-            <section className="mt-6 grid gap-3 sm:grid-cols-4">
-              {[
+            <section className="mt-6 grid gap-4 lg:h-[340px] lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+              <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-6">
+                <div className="flex items-center gap-5 border-b border-[#17211d]/15 pb-5">
+                  <div className="relative h-28 w-28 shrink-0">
+                    <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="#17211d" strokeOpacity=".1" strokeWidth="10" />
+                      <circle cx="60" cy="60" r="52" fill="none" stroke={scoreColor(score)} strokeLinecap="round" strokeWidth="10" strokeDasharray={circumference} strokeDashoffset={circumference * (1 - score / 100)} />
+                    </svg>
+                    <span className="font-tanker absolute inset-0 flex items-center justify-center text-4xl">{health ? score : "—"}</span>
+                  </div>
+                  <div>
+                    <p className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#17211d]/50 uppercase">Health score</p>
+                    <p className="font-satoshi mt-2 max-w-[16rem] text-sm text-[#17211d]/65">
+                      {health ? score >= 70 ? "The shop is in a healthy rhythm." : score >= 40 ? "A few areas need attention." : "Collections and records need care." : "Calculating from your shop data…"}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-5 grid h-[145px] grid-cols-3 divide-x divide-[#17211d]/15">
+                {[
                 ["Collection rate", health.collectionRate, "50% weight", "% of invoiced amount actually received"],
                 ["Reconciliation", health.reconciliationRate, "30% weight", "% of payments matched to a sale"],
                 ["Bookkeeping ≤ 3 days", health.bookkeepingRate, "20% weight", "% of entries logged within 3 days"],
-              ].map(([label, value, weight, subtitle]) => (
+                ].map(([label, value, weight, subtitle]) => (
                 <article
                   key={String(label)}
-                  className="rounded-2xl border border-[#17211d]/15 bg-white/55 p-4"
+                  className="px-3 first:pl-0 last:pr-0 sm:px-4"
                 >
-                  <p className="font-satoshi text-xs font-bold tracking-[0.12em] text-[#17211d]/50 uppercase">
+                  <p className="font-satoshi text-xs font-bold tracking-[0.1em] text-[#17211d]/50 uppercase">
                     {label}
                   </p>
-                  <p className="font-tanker mt-2 text-4xl">
-                    {pct(Number(value))}
-                  </p>
-                  <p className="font-satoshi mt-1 text-sm text-[#17211d]/55">
-                    {weight}
-                  </p>
-                  <p className="font-satoshi mt-1 text-xs leading-5 text-[#17211d]/50">
-                    {subtitle}
-                  </p>
+                  <p className="font-tanker mt-2 text-3xl">{pct(Number(value))}</p>
+                  <p className="font-satoshi mt-1 text-xs text-[#17211d]/55">{weight}</p>
+                  <p className="font-satoshi mt-1 text-xs leading-5 text-[#17211d]/50">{subtitle}</p>
                 </article>
-              ))}
-              <article className="h-full rounded-2xl border border-[#d85b3f] bg-[#17211d] p-4 text-white">
+                ))}
+                </div>
+              </article>
+              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white sm:p-6">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
                 pixelColor="#17211d"
                 className="font-satoshi text-xs font-bold tracking-[0.14em] text-[#f1d5a5] uppercase"
               />
-              <h2 className="font-satoshi mt-1 text-lg font-bold">
+              <h2 className="font-satoshi mt-2 text-xl font-bold">
                 What do you want to know?
               </h2>
               <form
@@ -237,14 +250,14 @@ export default function HealthPage() {
                   event.preventDefault();
                   void ask();
                 }}
-                className="mt-3 flex flex-col gap-2"
+                className="mt-4 flex flex-col gap-2"
               >
                 <input
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
                   maxLength={500}
                   placeholder="Who owes me the most money?"
-                  className="font-satoshi min-w-0 flex-1 rounded-xl border border-white/20 bg-white px-3 py-2 text-sm text-[#17211d] outline-none"
+                  className="font-satoshi min-w-0 rounded-xl border border-white/20 bg-white px-3 py-2 text-sm text-[#17211d] outline-none"
                 />
                 <button
                   disabled={asking || !question.trim()}
@@ -261,7 +274,7 @@ export default function HealthPage() {
               <div
                 ref={answerRef}
                 aria-live="polite"
-                className="mt-3 max-h-24 overflow-y-auto rounded-xl bg-white/10 p-3"
+                className="mt-4 min-h-0 flex-1 overflow-y-auto rounded-xl bg-white/10 p-3"
               >
                 <p className="font-satoshi whitespace-pre-wrap text-xs leading-5">
                   {answer || "Your answer will appear here."}
