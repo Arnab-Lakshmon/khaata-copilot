@@ -180,7 +180,7 @@ export default function ReconciliationPage() {
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <AppNav />
-        <div className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_.9fr]">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
           <section>
             <p className="font-satoshi text-sm font-bold tracking-[.16em] text-[#d85b3f] uppercase">
               Payment intake
@@ -188,11 +188,11 @@ export default function ReconciliationPage() {
             <h1 className="font-tanker mt-4 text-6xl leading-[.88] sm:text-8xl">
               Match what came in.
             </h1>
-            <p className="font-satoshi mt-6 max-w-xl text-lg leading-8 text-[#17211d]/65">
+            <p className="font-satoshi mt-4 max-w-xl text-lg leading-8 text-[#17211d]/65">
               Exact payments settle first. Ambiguous payments wait for your
               review.
             </p>
-            <label className="font-satoshi mt-10 block text-sm font-bold">
+            <label className="font-satoshi mt-6 block text-sm font-bold">
               Transactions{" "}
               <span className="font-normal text-[#17211d]/55">
                 ({lines.length} lines)
@@ -203,10 +203,10 @@ export default function ReconciliationPage() {
                 placeholder={
                   "Rajesh K — ₹4,500 — 2026-07-29\nUPI/NEHA STORES/₹1,250/29-07-2026"
                 }
-                className="mt-3 min-h-64 w-full rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
+                className="mt-3 min-h-56 w-full rounded-[1.5rem] border border-[#17211d]/20 bg-white/65 p-5 font-medium leading-7 outline-none transition focus:border-[#d85b3f]"
               />
             </label>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               <label className="font-satoshi cursor-pointer rounded-full border border-[#17211d]/25 px-5 py-3 text-sm font-bold hover:bg-white/60">
                 Upload CSV
                 <input
@@ -342,7 +342,7 @@ export default function ReconciliationPage() {
           </section>
         )}
         {results.length > 0 && (
-          <section className="mt-16 border-t border-[#17211d]/15 pt-8">
+          <section className="mt-8 border-t border-[#17211d]/15 pt-4">
             <p className="font-satoshi text-sm font-bold tracking-[.14em] text-[#17211d]/60 uppercase">
               Results
             </p>

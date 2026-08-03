@@ -35,6 +35,9 @@ function gstDeadline() {
     month: "long",
   }).format(new Date(now.getFullYear(), now.getMonth() + 1, 20));
 }
+function gstFilingMonth() {
+  return new Intl.DateTimeFormat("en-IN", { month: "long" }).format(new Date());
+}
 
 export default function RemindersPage() {
   const [drafts, setDrafts] = useState<Draft[]>([]);
@@ -141,7 +144,7 @@ export default function RemindersPage() {
             </p>
             <p className="font-tanker mt-3 text-4xl">GSTR-3B</p>
             <p className="font-satoshi mt-2 text-sm text-white/65">
-              This month&apos;s GSTR-3B is typically due {gstDeadline()}.
+              {gstFilingMonth()}&apos;s GSTR-3B is typically due {gstDeadline()}.
             </p>
           </div>
         </div>
