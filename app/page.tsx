@@ -19,7 +19,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f4f0e8] text-[#17211d]">
       <div className={`mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-7 transition-[transform,opacity] duration-[450ms] ease-in-out sm:px-10 lg:px-16 ${isEntering ? "scale-[1.08] opacity-0" : "scale-100 opacity-100"}`}>
-        <AppNav />
+        <div className="mx-auto w-full max-w-5xl">
+          <AppNav />
+        </div>
 
         <section className="flex flex-1 items-center py-20">
           <div className="mx-auto max-w-5xl text-center">

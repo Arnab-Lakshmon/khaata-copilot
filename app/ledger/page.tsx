@@ -63,8 +63,10 @@ export default function LedgerPage() {
     );
   return (
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto w-full max-w-5xl">
         <AppNav />
+      </div>
+      <div className="mx-auto max-w-3xl">
         <div className="mt-20">
           <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
             Smart ledger capture

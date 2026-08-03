@@ -135,7 +135,9 @@ export default function HealthPage() {
   return (
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
-        <AppNav />
+        <div className="mx-auto w-full max-w-5xl">
+          <AppNav />
+        </div>
         <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
         <header className="flex flex-col justify-between gap-3 border-b border-[#17211d]/15 pb-4 lg:col-start-1 lg:row-start-1">
           <div>

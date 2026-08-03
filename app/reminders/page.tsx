@@ -123,8 +123,10 @@ export default function RemindersPage() {
   }
   return (
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto w-full max-w-5xl">
         <AppNav />
+      </div>
+      <div className="mx-auto max-w-5xl">
         <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_0.75fr] lg:items-end">
           <div>
             <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">

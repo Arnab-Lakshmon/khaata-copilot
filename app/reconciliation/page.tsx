@@ -179,7 +179,9 @@ export default function ReconciliationPage() {
   return (
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
-        <AppNav />
+        <div className="mx-auto w-full max-w-5xl">
+          <AppNav />
+        </div>
         <div className="mt-8 grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
           <section>
             <p className="font-satoshi text-sm font-bold tracking-[.16em] text-[#d85b3f] uppercase">
