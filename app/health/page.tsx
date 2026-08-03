@@ -136,7 +136,8 @@ export default function HealthPage() {
     <main className="min-h-screen bg-[#f4f0e8] px-6 py-8 text-[#17211d] sm:px-10 lg:px-16">
       <div className="mx-auto max-w-6xl">
         <AppNav />
-        <header className="mt-10 flex flex-col justify-between gap-6 border-b border-[#17211d]/15 pb-6 lg:flex-row lg:items-end">
+        <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
+        <header className="flex flex-col justify-between gap-4 border-b border-[#17211d]/15 pb-5 lg:col-start-1 lg:row-start-1">
           <div>
             <p className="font-satoshi text-sm font-bold tracking-[0.16em] text-[#d85b3f] uppercase">
               Shop health dashboard
@@ -149,31 +150,9 @@ export default function HealthPage() {
               bookkeeping.
             </p>
           </div>
-          <div className="hidden flex items-center gap-6 rounded-[1.5rem] border border-[#17211d]/15 bg-white/60 p-5">
-            <div className="relative h-36 w-36">
-              <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="52"
-                  fill="none"
-                  stroke="#17211d"
-                  strokeOpacity=".1"
-                  strokeWidth="10"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="52"
-                  fill="none"
-                  stroke={scoreColor(score)}
-                  strokeLinecap="round"
-                  strokeWidth="10"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={circumference * (1 - score / 100)}
-                />
-              </svg>
-              <span className="font-tanker absolute inset-0 flex items-center justify-center text-5xl">
+          <div>
+          <div className="hidden">
+              <span>
                 {health ? score : "—"}
               </span>
             </div>
@@ -198,8 +177,8 @@ export default function HealthPage() {
         )}
         {health && (
           <>
-            <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)] lg:items-stretch">
-              <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-6">
+            <section className="contents">
+              <article className="h-full rounded-[2rem] border border-[#17211d]/15 bg-white/55 p-5 shadow-[6px_6px_0_#17211d] sm:p-6 lg:col-start-1 lg:row-start-2">
                 <div className="flex items-center gap-5 border-b border-[#17211d]/15 pb-5">
                   <div className="relative h-28 w-28 shrink-0">
                     <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
@@ -235,7 +214,7 @@ export default function HealthPage() {
                 ))}
                 </div>
               </article>
-              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white shadow-[5px_5px_0_#17211d] sm:p-6">
+              <article className="flex h-full min-h-0 flex-col rounded-[2rem] border border-[#d85b3f] bg-[#17211d] p-5 text-white shadow-[5px_5px_0_#17211d] sm:p-6 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <PixelHeader
                 text="ASK KHAATA"
                 active={asking}
@@ -369,6 +348,7 @@ export default function HealthPage() {
             </section>
           </>
         )}
+        </div>
       </div>
     </main>
   );
